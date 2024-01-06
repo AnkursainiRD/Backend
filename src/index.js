@@ -1,15 +1,16 @@
 import dotenv from 'dotenv'
-import express from "express";
-const app=express();
 import dbConnect from "./database/Database.js";
+import app from './app.js';
 
 dotenv.config({
     path:"./env"
 })
 dbConnect()
-
-app.get('/',function(req,res){
-    res.send("Working properly")
+.then(()=>{
+    app.listen(process.env.PORT || 4000, ()=>{
+        console.log("Server Started at",process.env.PORT);
+    })
 })
-
-app.listen(3000)
+.catch((error)=>{
+    console.log("Mngodb connectino failed",error);
+})
