@@ -1,7 +1,7 @@
 export const asyncHandler=(fun)=>async(req,res,next)=>{
     try {
         
-        await fun(req,res,next)
+      return  await fun(req,res,next)
 
     } catch (error) {
         res.status(err.code || 500).json({
@@ -10,3 +10,10 @@ export const asyncHandler=(fun)=>async(req,res,next)=>{
         })
     }
 }
+
+// export const asyncHandler=(reqHandler)=>{
+//     return (req,res,next)=>{
+//         Promise.resolve(reqHandler(req,res,next))
+//         .catch((error)=>next(error))
+//     }
+// }
