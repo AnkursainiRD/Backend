@@ -95,7 +95,7 @@ const loginUser=asyncHandler(async (req,res)=>{
 
 const logoutUser=asyncHandler(async (req,res)=>{
    const userId=req.user._id
-   await User.findByIdAndUpdate(userId,{$set:{refreshToken:undefined}},{new:true})
+   await User.findByIdAndUpdate(userId,{$unset:{refreshToken:1}},{new:true})
 
    const options={
     httpOnly:true,
@@ -239,7 +239,7 @@ const getCurrentChannel=asyncHandler(async (req,res)=>{
                     $size:"$subscribedTo"
                 },
                 isSubscribed:{
-                    $con:{
+                    $cond:{
                         if:{$in:[req.user?._id, "$subscribers.subscriber"]},
                         then: true,
                         else: false
