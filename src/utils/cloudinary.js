@@ -1,5 +1,6 @@
 import {v2 as cloudinary} from "cloudinary"
 import fs from "fs"
+import apiError from "./apiError.js";
 
           
 cloudinary.config({ 
@@ -17,6 +18,21 @@ export const cloudinaryUpload=async (localFilePath)=>{
     return responce
   } catch (error) {
     fs.unlinkSync(localFilePath)  //remove local temp saved file if operation failed
+    return null
+  }
+}
+
+export const cloudinaryDelete=async (publicId)=>{
+  try {
+    console.log(publicId);
+    const imageUrl = publicId.split('/').pop().split('.')[0];
+    const responce=await cloudinary.uploader.destroy(imageUrl)
+    if(!responce){
+      throw new apiError(401,"Error while deleting data from cloudinary!")
+    }
+    console.log(responce)
+  } catch (error) {
+    console.log(error);
     return null
   }
 }

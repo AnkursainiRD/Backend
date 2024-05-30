@@ -9,9 +9,9 @@ const likeSchema=new mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:"User"
     },
-    video: {
-            type:mongoose.Schema.Types.ObjectId,
-            ref:"Video"
+    video:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"Video"
     },
     communityPost:{
         type:mongoose.Schema.Types.ObjectId,

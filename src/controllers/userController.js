@@ -1,7 +1,7 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { User } from "../models/userModel.js";
 import apiError from "../utils/apiError.js";
-import { cloudinaryUpload } from "../utils/cloudinary.js";
+import { cloudinaryDelete, cloudinaryUpload } from "../utils/cloudinary.js";
 import apiResponce from "../utils/apiResponce.js";
 import jwt from "jsonwebtoken"
 import mongoose from "mongoose";
@@ -184,7 +184,27 @@ const updateUserAvatar=asyncHandler(async (req,res)=>{
     if(!avatar.url){
         throw new apiError(400,"Errow while updting avatar!")
     }
-    const user=await User.findByIdAndUpdate(req.user?._id,{$set:{avatar:avatar.ur}},{new:true})
+    const user=await User.findById(req.user?._id)
+    const oldAvatar=user?.avatar
+    // const user=await User.aggregate([
+    //     {
+    //         $match:{_id:new mongoose.Types.ObjectId(req.user?._id)}
+    //     },
+    //     {
+    //         $set:{middleName:"aksd"}
+    //     },
+    //     {
+    //         $project:{
+    //             email:1,
+    //             middleName:1,
+    //             previousAvatar:1,
+    //             avatar:1
+    //         }
+    //     }
+    // ])
+    await cloudinaryDelete(oldAvatar)
+    user.avatar=avatar?.url
+    await user.save()
     return res.status(200).json(
         new apiResponce(200,user,"Avatar updated successfuly")
     )
@@ -199,7 +219,12 @@ const updateUserCoverImage=asyncHandler(async (req,res)=>{
     if(!coverImage.url){
         throw new apiError(400,"Errow while updting cover image!")
     }
-    const user=await User.findByIdAndUpdate(req.user?._id,{$set:{coverImage:coverImage.ur}},{new:true})
+    // const user=await User.findByIdAndUpdate(req.user?._id,{$set:{coverImage:coverImage.ur}},{new:true})
+    const user=await User.findById(req.user?._id)
+    const oldCoverImage= user?.coverImage
+    await cloudinaryDelete(oldCoverImage)
+    user.coverImage=coverImage?.url
+    await user.save()
     return res.status(200).json(
         new apiResponce(200,user,"Cover Image updated successfuly")
     )
